@@ -32,6 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.material3.Button
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,97 +46,58 @@ class MainActivity : ComponentActivity() {
             _1Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
                 ){
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Screen()
-                    }
+                    App()
                 }
             }
         }
     }
 }
 
+// 1. Создаёшь enum с названиями экранов
+enum class Screen {
+    FIRST, SECOND
+}
+
+// 2. В главной функции храниш текущий экран
 @Composable
-fun Screen(){
-    Column(
-        Modifier.fillMaxWidth()
-    ) {
-        Row(
-            Modifier.weight(1f),
-        ){
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .background(Color(0xFFB69DF8))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Text composable",
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Displays text and follows the recommended Material Design guidelines.",
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .background(Color(0xFFF6EDFF))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Text composable",
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Displays text and follows the recommended Material Design guidelines.",
-                )
-            }
+fun App() {
+    var currentScreen by remember { mutableStateOf(Screen.FIRST) }
+
+    when (currentScreen) {
+        Screen.FIRST -> FirstScreen(
+            onNavigate = { currentScreen = Screen.SECOND }
+        )
+        Screen.SECOND -> SecondScreen(
+            onNavigate = { currentScreen = Screen.FIRST }
+        )
+    }
+}
+
+// 3. Первый экран
+@Composable
+fun FirstScreen(onNavigate: () -> Unit) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text("Это первый экран")
+        Button(onClick = onNavigate) {
+            Text("Перейти на второй")
         }
-        Row(
-            Modifier.weight(1f)
-        ){
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .background(Color(0xFFF6EDFF))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Text composable",
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Displays text and follows the recommended Material Design guidelines.",
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxSize()
-                    .background(Color(0xFFB69DF8))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Text composable",
-                    fontWeight = FontWeight.Bold,
-                )
-                Text(
-                    text = "Displays text and follows the recommended Material Design guidelines.",
-                )
-            }
+    }
+}
+
+// 4. Второй экран
+@Composable
+fun SecondScreen(onNavigate: () -> Unit) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Text("Это второй экран")
+        Button(onClick = onNavigate) {
+            Text("Вернуться назад")
         }
     }
 }
@@ -140,13 +106,6 @@ fun Screen(){
 @Composable
 fun GreetingPreview() {
     _1Theme {
-        //GreetingText(message = "Happy Birthday Sam!", from = "From Emma")
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BirthdayCardPreview() {
-    _1Theme {
-    }
-}
